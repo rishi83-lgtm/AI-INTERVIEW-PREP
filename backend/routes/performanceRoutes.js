@@ -1,0 +1,1 @@
+import {Router} from 'express';import {authMiddleware} from '../middleware/authMiddleware.js';import {dashboard} from '../controllers/performanceController.js';const router=Router();router.get('/dashboard',authMiddleware,dashboard);export default router;

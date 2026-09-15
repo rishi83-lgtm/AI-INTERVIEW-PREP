@@ -1,0 +1,1 @@
+export default function ScoreCard({label,value,icon:Icon,trend}){return <article className="score-card"><div className="score-icon">{Icon&&<Icon size={20}/>}</div><p>{label}</p><strong>{value}</strong>{trend&&<em>{trend}</em>}</article>}

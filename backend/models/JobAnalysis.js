@@ -1,0 +1,2 @@
+import mongoose from 'mongoose';
+const schema=new mongoose.Schema({userId:{type:mongoose.Schema.Types.ObjectId,ref:'User',required:true,index:true},title:{type:String,default:'Target role'},description:{type:String,required:true,maxlength:20000},requiredSkills:{type:[String],default:[]},matchedSkills:{type:[String],default:[]},missingSkills:{type:[String],default:[]},matchPercentage:{type:Number,default:0}},{timestamps:true});export default mongoose.model('JobAnalysis',schema);

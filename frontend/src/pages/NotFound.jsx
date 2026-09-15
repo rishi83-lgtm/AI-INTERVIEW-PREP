@@ -1,0 +1,1 @@
+import {Link} from 'react-router-dom';export default function NotFound(){return <main className="auth-page"><section className="auth-card center"><div className="auth-brand">✦ InterviewIQ</div><h1>Page not found</h1><p>The page you asked for has moved or does not exist.</p><Link to="/dashboard">Back to dashboard</Link></section></main>}

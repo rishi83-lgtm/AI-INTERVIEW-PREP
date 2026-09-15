@@ -1,0 +1,1 @@
+import mongoose from 'mongoose';const schema=new mongoose.Schema({interviewId:{type:mongoose.Schema.Types.ObjectId,ref:'Interview',required:true,index:true},question:{type:String,required:true},category:String,difficulty:String,expectedAnswer:String,topic:String},{timestamps:true});export default mongoose.model('Question',schema);

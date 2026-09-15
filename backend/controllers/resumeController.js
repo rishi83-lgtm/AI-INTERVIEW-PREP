@@ -1,0 +1,5 @@
+import Resume from '../models/Resume.js';
+const knownSkills=['javascript','typescript','react','node.js','express','mongodb','sql','mysql','postgresql','python','java','aws','docker','git','html','css','fastapi','django','machine learning','data structures','algorithms'];
+const extractSkills=value=>knownSkills.filter(skill=>value.toLowerCase().includes(skill));
+export async function getResume(req,res,next){try{res.json({success:true,data:await Resume.findOne({userId:req.user._id}).lean()})}catch(error){next(error)}}
+export async function saveResume(req,res,next){try{const content=String(req.body.content||'').trim();if(content.length<30)return res.status(400).json({success:false,message:'Paste at least 30 characters from your resume.'});const skills=extractSkills(content);const resume=await Resume.findOneAndUpdate({userId:req.user._id},{content,skills,updatedAt:new Date()},{new:true,upsert:true,runValidators:true,setDefaultsOnInsert:true});if(skills.length)await req.user.constructor.findByIdAndUpdate(req.user._id,{$addToSet:{skills:{$each:skills}}});res.json({success:true,data:resume})}catch(error){next(error)}}

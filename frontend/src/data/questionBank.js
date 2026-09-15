@@ -1,0 +1,13 @@
+// Curated from open interview-preparation material (see SOURCES.md).
+export const questionBank = [
+  { id: 'js-closures', category: 'JavaScript', level: 'Intermediate', question: 'What is a closure in JavaScript, and where would you use one?', cues: ['Explain lexical scope first.', 'Use a practical example such as data privacy or a callback.', 'Mention that closures keep references, so avoid retaining unnecessary data.'] },
+  { id: 'js-event-loop', category: 'JavaScript', level: 'Intermediate', question: 'Walk me through the JavaScript event loop. How do microtasks differ from macrotasks?', cues: ['Start with the call stack.', 'Contrast Promise callbacks with setTimeout.', 'Use a small ordering example.'] },
+  { id: 'react-state', category: 'React', level: 'Intermediate', question: 'How do you decide whether state belongs in a component, a context, or an external store?', cues: ['Keep state as local as possible.', 'Describe shared state and update frequency.', 'Mention avoiding unnecessary global state.'] },
+  { id: 'react-render', category: 'React', level: 'Intermediate', question: 'What triggers a React re-render, and how would you investigate an unexpectedly slow render?', cues: ['State, props, and context can trigger renders.', 'Use React DevTools Profiler before optimizing.', 'Explain memoization as a measured choice.'] },
+  { id: 'api-design', category: 'System design', level: 'Intermediate', question: 'How would you design a rate-limited API endpoint for a public application?', cues: ['Clarify users, traffic, and limits.', 'Compare token bucket or fixed-window strategies.', 'Cover response codes, observability, and graceful degradation.'] },
+  { id: 'behavior-conflict', category: 'Behavioral', level: 'Any', question: 'Tell me about a time you disagreed with a teammate. What did you do?', cues: ['Answer in STAR format.', 'Focus on listening and the decision process.', 'End with a measurable outcome or learning.'] },
+  { id: 'behavior-failure', category: 'Behavioral', level: 'Any', question: 'Describe a project that did not go as planned. How did you recover?', cues: ['Choose a real, bounded story.', 'Own your role without over-blaming.', 'Show what changed afterwards.'] },
+  { id: 'sql-index', category: 'Databases', level: 'Intermediate', question: 'What is a database index, and when can adding one make performance worse?', cues: ['Describe the lookup trade-off.', 'Mention write overhead and storage.', 'Talk about measuring queries with an execution plan.'] },
+];
+
+export const categories = ['All', ...new Set(questionBank.map((item) => item.category))];
