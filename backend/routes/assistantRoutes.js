@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import OpenAI from 'openai';
-import axios from 'axios';
 
 const router = Router();
 const fallback = (question) => {
@@ -17,17 +16,18 @@ router.post('/ask', async (req, res, next) => {
     const question = String(req.body.question || '').trim();
     if (!question || question.length > 4000) return res.status(400).json({ success: false, message: 'Enter a question under 4,000 characters.' });
     const history=Array.isArray(req.body.messages)?req.body.messages.slice(-10).filter(item=>['user','assistant'].includes(item?.role)&&typeof item.content==='string'&&item.content.length<=4000).map(item=>({role:item.role,content:item.content})):[];
-    const messages=[{role:'system',content:'You are InterviewIQ, a warm, helpful AI interview coach. Greet first-time users naturally. Answer questions accurately and clearly. For technical questions include a concise example; for behavioral questions use STAR guidance. If unsure, say so rather than inventing facts.'},...history,{role:'user',content:question}];
-    if(process.env.GROQ_API_KEY){const response=await axios.post('https://api.groq.com/openai/v1/chat/completions',{model:process.env.GROQ_MODEL||'openai/gpt-oss-20b',messages,temperature:.7,max_tokens:900},{headers:{Authorization:`Bearer ${process.env.GROQ_API_KEY}`},timeout:25000});const answer=response.data?.choices?.[0]?.message?.content?.trim();if(!answer)throw new Error('The AI provider returned an empty response.');return res.json({success:true,data:{answer,source:'groq'}})}
+    const messages=[{role:'system',content:'You are InterviewIQ, a helpful general-purpose AI assistant. Answer any safe question clearly, accurately, and in the user\'s language when possible. Adapt the depth and format to the question. For technical topics, explain concepts and include concise examples when useful. For current or uncertain facts, be transparent about limitations and never invent sources or claims. You may also help with interview preparation, coding, writing, learning, planning, and everyday questions.'},...history,{role:'user',content:question}];
     if (!process.env.OPENAI_API_KEY) return res.json({ success: true, data: { answer: fallback(question), source: 'local-fallback' } });
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, timeout: 20000 });
-    const response = await client.responses.create({
-      model: process.env.OPENAI_MODEL || 'gpt-5',
-      instructions: messages[0].content,
-      input: messages.slice(1).map(item=>`${item.role}: ${item.content}`).join('\n'),
-      max_output_tokens: 700,
+    const response = await client.chat.completions.create({
+      model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+      messages,
+      temperature: 0.7,
+      max_tokens: 900,
     });
-    res.json({ success: true, data: { answer: response.output_text, source: 'openai' } });
+    const answer=response.choices[0]?.message?.content?.trim();
+    if(!answer) throw new Error('OpenAI returned an empty response.');
+    res.json({ success: true, data: { answer, source: 'openai' } });
   } catch (error) { next(error); }
 });
 

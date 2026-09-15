@@ -42,7 +42,7 @@ Keep `MONGO_URI`, `JWT_SECRET`, and any API keys in `backend/.env`; never place 
 
 - **Practice studio** keeps the question, answer area, instant-feedback card, and talking points in separate responsive grid areas so cards do not overlap.
 - **Progress tracker** provides a dedicated, visual view for readiness, practice streaks, and skill areas.
-- **Ask InterviewIQ** calls `POST /api/assistant/ask`. Add `OPENAI_API_KEY` to `backend/.env` (copy `backend/.env.example`) to enable live OpenAI answers. Without a key it returns a clear local fallback.
+- **Ask InterviewIQ** calls `POST /api/assistant/ask`. Add `OPENAI_API_KEY` to `backend/.env` (copy `backend/.env.example`) to enable OpenAI-powered answers for general questions, coding, writing, learning, and interview preparation. The key must remain server-side; without it the app uses its local fallback.
 - The free local practice bank is in `frontend/src/data/questionBank.js`; its freely accessible source references are listed in `frontend/src/data/SOURCES.md`.
 
 ## Verification
