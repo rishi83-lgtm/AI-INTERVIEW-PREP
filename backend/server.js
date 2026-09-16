@@ -1,3 +1,17 @@
 import 'dotenv/config';import express from 'express';import cors from 'cors';import rateLimit from 'express-rate-limit';import {connectDatabase} from './config/db.js';import authRoutes from './routes/authRoutes.js';import assistantRoutes from './routes/assistantRoutes.js';import userRoutes from './routes/userRoutes.js';import interviewRoutes from './routes/interviewRoutes.js';import performanceRoutes from './routes/performanceRoutes.js';import {errorMiddleware} from './middleware/errorMiddleware.js';
 const app=express();const allowedOrigins=[process.env.CLIENT_URL,'http://localhost:5173','http://127.0.0.1:5173','http://127.0.0.1:5176'].filter(Boolean);app.use(cors({origin:(origin,callback)=>callback(null,!origin||allowedOrigins.includes(origin))}));app.use(express.json({limit:'1mb'}));app.use('/api/auth',rateLimit({windowMs:15*60*1000,max:100}),authRoutes);app.use('/api/assistant',rateLimit({windowMs:60*1000,max:20}),assistantRoutes);app.use('/api/users',userRoutes);app.use('/api/interviews',interviewRoutes);app.use('/api/performance',performanceRoutes);app.get('/api/health',(_req,res)=>res.json({success:true,data:{status:'ok'}}));app.use(errorMiddleware);
-const port=process.env.PORT||5000;connectDatabase().then(()=>app.listen(port,()=>console.log(`API listening on port ${port}`))).catch(err=>{console.error(`Database unavailable; API did not start: ${err.message}`);process.exit(1)});
+const basePort = Number(process.env.PORT || 5001);
+const startServer = (port, attempt = 0) => {
+  const server = app.listen(port, () => console.log(`API listening on port ${port}`));
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE' && attempt < 5) {
+      const nextPort = port + 1;
+      console.warn(`Port ${port} busy, retrying on ${nextPort}`);
+      startServer(nextPort, attempt + 1);
+      return;
+    }
+    console.error(`API failed to start: ${err.message}`);
+    process.exit(1);
+  });
+};
+connectDatabase().then(() => startServer(basePort)).catch((err) => { console.error(`Database unavailable; API did not start: ${err.message}`); process.exit(1); });
